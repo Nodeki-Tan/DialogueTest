@@ -10,7 +10,7 @@ public class Item : ScriptableObject
     new public string name = "New Item";    // Name of the item
     public Sprite icon = null;              // Item icon
     public bool isDefaultItem = false;      // Is the item default wear?
-	public Vector2 size = Vector2.one;
+	public int size = 1;
 	
     // Called when the item is pressed in the inventory
     public virtual void Use()
@@ -27,6 +27,7 @@ public class Item : ScriptableObject
     }
 	
 	public void Drop(){
+
 		GameObject drop = Instantiate(new GameObject(name), GameObject.FindWithTag("Player").transform.position, Quaternion.identity);
 		
 		drop.AddComponent<Rigidbody2D>();

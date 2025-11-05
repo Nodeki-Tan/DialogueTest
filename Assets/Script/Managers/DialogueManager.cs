@@ -27,6 +27,7 @@ public class DialogueManager
     public float typeSpeed = 0.05f;
     public float changeAutoSentenceSpeed = 1f;
     public float changeAutoDialogSpeed = 3f;
+    public int dialogueChildSelection = 0;
 
 
     private Queue<string> Strings;
@@ -56,7 +57,7 @@ public class DialogueManager
         nameText.SetText(_dialogue.name);
 
         characterSprite = GameObject.FindGameObjectWithTag("SpriteDisplay").GetComponent<Image>();
-        characterSprite.sprite = _dialogue.sprite;
+        characterSprite.sprite = _dialogue.character.sprites[(int)_dialogue.emote];
 
         if (_dialogue.triggerEvent != null) { _dialogue.triggerEvent.OnStateEnter(); }
 
@@ -124,7 +125,7 @@ public class DialogueManager
             {
                 yield return new WaitForSeconds(_speed);
 
-                StartDialogue(current.child);
+                StartDialogue(current.child[current.choiceDialogue ? dialogueChildSelection : 0]);
             }
             else
             {
@@ -136,15 +137,16 @@ public class DialogueManager
 
     void EndDialogue()
     {
+
+        if (current.triggerEvent != null) { current.triggerEvent.OnStateExit(); }
+
         if (current.child != null)
         {
-            StartDialogue(current.child);
+            StartDialogue(current.child[current.choiceDialogue ? dialogueChildSelection : 0]);
         }
         else
         {
             dialogueText.text = "";
-
-            if (current.triggerEvent != null) { current.triggerEvent.OnStateExit(); }
         }
     }
 

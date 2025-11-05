@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Script.Inventory.Items;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -27,10 +28,8 @@ public class Inventory : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    public static int InvWidth = 10;
-    public static int InvHeight = 10;
     
-    public Vector2Int space = new Vector2Int(InvWidth, InvHeight);  // Amount of slots in inventory
+    public int space = 10;  // Amount of slots in inventory
 
     // Current list of items in inventory
     public List<Item> items = new List<Item>();
@@ -43,14 +42,14 @@ public class Inventory : MonoBehaviour
         if (!item.isDefaultItem)
         {
             // Check if out of space
-            //if (space - item.size < 0)
-            //{
+            if (space - item.size < 0)
+            {
                 Debug.Log("Not enough room.");
                 return false;
-            //}
+            }
 
             items.Add(item);    // Add item to list
-			//space -= item.size;
+			space -= item.size;
 			
             // Trigger callback
             if (onItemChangedCallback != null)
@@ -64,11 +63,99 @@ public class Inventory : MonoBehaviour
     public void Remove(Item item)
     {
         items.Remove(item);     // Remove item from list
-		//space += item.size;
+		space += item.size;
 		
         // Trigger callback
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
     }
+
+    // Remove an item
+    public void Remove(int itemslot)
+    {
+        Item item = items[itemslot];
+
+        items.RemoveAt(itemslot);     // Remove item from list
+        space += item.size;
+
+        // Trigger callback
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public bool RequireItem(Item item, int amount)
+    {
+        bool hasEnough = false;
+
+        int q = amount;
+        foreach (Item i in items)
+        {
+            if (i == item)
+            {
+                q--;
+                if (q <= 0)
+                {
+                    hasEnough = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasEnough)
+        {
+            foreach (Item i in items)
+            {
+                if (i == item)
+                {
+                    items.Remove(i);     // Remove item from list
+                    space -= item.size;
+
+                    // Trigger callback
+                    if (onItemChangedCallback != null)
+                        onItemChangedCallback.Invoke();
+
+                    amount--;
+                    if (amount <= 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool TakeItems(ItemRequirement[] itemRequirements)
+    {
+        // Use the item
+        // Something might happen
+
+        if (itemRequirements != null)
+        {
+            foreach (ItemRequirement req in itemRequirements)
+            {
+                Debug.Log("Requires " + req.quantity + " x " + req.item.name);
+
+                if (!RequireItem(req.item, req.quantity))
+                {
+                    Debug.Log("Not enough " + req.item.name);
+                    return false;
+                }
+            }
+
+            Debug.Log("Crafted " + name);
+            return true;
+        }
+
+        Debug.Log("No requirements for " + name);
+
+        return false;
+    }
+
 
 }
