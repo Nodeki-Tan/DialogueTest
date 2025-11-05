@@ -18,11 +18,11 @@ using UnityEngine;
 
 namespace GameEvents
 {
-    
+
     [CreateAssetMenu(menuName = "Gameplay/Event")]
     public class Event : ScriptableObject
     {
-        
+
         // Executed whenever the Event has been called
         public virtual void OnStateEnter() { }
 

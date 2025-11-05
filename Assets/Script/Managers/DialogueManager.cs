@@ -86,7 +86,7 @@ public class DialogueManager
 
         dialogueText.StopAllCoroutines();
         dialogueText.StartCoroutine(TypeSentence(_sentence));
-        
+
     }
 
     IEnumerator TypeSentence(string _sentence)
