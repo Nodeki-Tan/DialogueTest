@@ -59,7 +59,13 @@ public class DialogueManager
         characterSprite = GameObject.FindGameObjectWithTag("SpriteDisplay").GetComponent<Image>();
         characterSprite.sprite = _dialogue.character.sprites[(int)_dialogue.emote];
 
-        if (_dialogue.triggerEvent != null) { _dialogue.triggerEvent.OnStateEnter(); }
+        if (_dialogue.triggerEvents != null) 
+        {
+            foreach (Event e in _dialogue.triggerEvents)
+            {
+                e.OnStateEnter();
+            }
+        }
 
         Strings.Clear();
         current = _dialogue;
@@ -121,7 +127,7 @@ public class DialogueManager
         }
         else
         {
-            if (current.child != null)
+            if (current.child.Length != 0)
             {
                 yield return new WaitForSeconds(_speed);
 
@@ -138,9 +144,15 @@ public class DialogueManager
     void EndDialogue()
     {
 
-        if (current.triggerEvent != null) { current.triggerEvent.OnStateExit(); }
+        if (current.triggerEvents != null)
+        {
+            foreach (Event e in current.triggerEvents)
+            {
+                e.OnStateExit();
+            }
+        }
 
-        if (current.child != null)
+        if (current.child.Length != 0)
         {
             StartDialogue(current.child[current.choiceDialogue ? dialogueChildSelection : 0]);
         }

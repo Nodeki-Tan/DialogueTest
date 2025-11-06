@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: SampleA
   m_EditorClassIdentifier: 
   name: Deemah
-  sprite: {fileID: 21300000, guid: 6d62432859896134eb8540308c440050, type: 3}
-  autoContinue: 1
+  character: {fileID: 11400000, guid: a36165f36d50465499716878ed5729bf, type: 2}
+  emote: 0
+  autoContinue: 0
+  choiceDialogue: 0
   sentences:
   - Test, this is a test, check it!
   - There can be different lines
-  child: {fileID: 11400000, guid: 943c4096fc643dd45ae63292f8fc9278, type: 2}
+  child:
+  - {fileID: 11400000, guid: 943c4096fc643dd45ae63292f8fc9278, type: 2}
+  triggerEvents: []

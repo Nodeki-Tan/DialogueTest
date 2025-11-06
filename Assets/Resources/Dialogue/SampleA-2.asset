@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: SampleA-2
   m_EditorClassIdentifier: 
   name: Deemah
-  sprite: {fileID: 21300000, guid: 7674a3d4be991bf40981cd9c52f84be7, type: 3}
+  character: {fileID: 11400000, guid: a36165f36d50465499716878ed5729bf, type: 2}
+  emote: 1
   autoContinue: 0
+  choiceDialogue: 0
   sentences:
   - And we can even get new dialogues loaded
   - And keep reading!
-  child: {fileID: 0}
-  triggerEvent: {fileID: 11400000, guid: 2d4fdfa1d3f0f9d46b79a5d53186d083, type: 2}
+  child: []
+  triggerEvents:
+  - {fileID: 11400000, guid: 2d4fdfa1d3f0f9d46b79a5d53186d083, type: 2}

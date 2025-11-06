@@ -7,6 +7,9 @@ TagManager:
   - DialogueDisplay
   - NameDisplay
   - SpriteDisplay
+  - PopUpDisplay
+  - PopUpTextDisplay
+  - PopUpSpriteDisplay
   layers:
   - Default
   - TransparentFX

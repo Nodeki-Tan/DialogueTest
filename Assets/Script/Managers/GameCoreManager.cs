@@ -11,11 +11,14 @@ public class GameCoreManager
     {
         Debug.Log("Gamecore started"); // this initializes the game
 
-        _ = new DialogueManager();        
+        _ = new AssetManager();
+        _ = new DialogueManager();
+        _ = new PopUpManager();
         _ = new FileManager();
         _ = new SettingsManager();
         _ = new GameManager();
         _ = new EquipmentManager();
+        _ = new QuestManager();
         //_ = new PatreonManager();
 
 

@@ -157,5 +157,81 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    public bool CheckForItems(ItemRequirement[] itemRequirements)
+    {
+        if (itemRequirements != null)
+        {
+            foreach (ItemRequirement req in itemRequirements)
+            {
+                Debug.Log("Checking for " + req.quantity + " x " + req.item.name);
+                int q = req.quantity;
+                foreach (Item i in items)
+                {
+                    if (i == req.item)
+                    {
+                        q--;
+                        if (q <= 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (q > 0)
+                {
+                    Debug.Log("Not enough " + req.item.name);
+                    return false;
+                }
+            }
+            Debug.Log("All items available for " + name);
+            return true;
+        }
+        Debug.Log("No requirements for " + name);
+        return false;
+    }
+
+    public bool SaveInventory()
+    {
+        // Implement saving logic here
+
+        dataCollection data = new dataCollection(new Dictionary<string, string>(), "inventory", "Data", "Saves/");
+        data.SaveVariable("itemCount", items.Count.ToString());
+
+        foreach (Item item in items)
+        {
+            int index = items.IndexOf(item);
+            data.SaveVariable("item_" + index, item.name);
+        }
+
+        data.SaveFile();
+
+        Debug.Log("Inventory saved.");
+        return true;
+    }
+
+    public bool LoadInventory() { 
+        
+        dataCollection data = new dataCollection(new Dictionary<string, string>(), "inventory", "Data", "Saves/");
+        data.LoadFile();
+
+        items.Clear();
+        space = 10; // Reset space
+
+        int itemCount = data.TryGetInt("itemCount", 0);
+
+        for (int i = 0; i < itemCount; i++)
+        {
+            string itemName = data.data["item_" + i];
+            var item = AssetManager.Singleton.getByName(itemName);
+            if (item != null)
+            {
+                Add(item);
+            }
+
+        }
+
+        Debug.Log("Inventory loaded.");
+        return true;
+    }
+
 
 }

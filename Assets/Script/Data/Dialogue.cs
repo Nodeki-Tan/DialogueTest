@@ -18,7 +18,7 @@ public class Dialogue : ScriptableObject
 
     public Dialogue[] child = null;
 
-    public Event triggerEvent = null;					// Optional event to trigger at the start and end of the dialogue
+    public Event[] triggerEvents = null;					// Optional event to trigger at the start and end of the dialogue
 
 }
 

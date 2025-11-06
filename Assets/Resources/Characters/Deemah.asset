@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f545e9f73c5671c4c968425ab93d8f67, type: 3}
+  m_Name: Deemah
+  m_EditorClassIdentifier: 
+  name: Deemah
+  sprites:
+  - {fileID: 21300000, guid: 6d62432859896134eb8540308c440050, type: 3}
+  - {fileID: 21300000, guid: 349ed51f56321d948b8c0a5931d2f7ce, type: 3}
+  - {fileID: 21300000, guid: 5b0a842f9873d8041b5130def39207bc, type: 3}
+  - {fileID: 21300000, guid: 7674a3d4be991bf40981cd9c52f84be7, type: 3}
+  - {fileID: 21300000, guid: 40a1a5d1ad8c1704aa3cf7a89f74b468, type: 3}
+  - {fileID: 21300000, guid: bf40ae68e78bba8478429381838082bc, type: 3}
