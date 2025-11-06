@@ -11,8 +11,8 @@ public class PlayerStats : CharacterStats
     // Use this for initialization
     void Start()
     {
-        EquipmentManager.instance.onEquipmentChanged += OnEquipmentChanged;
-		EquipmentManager.instance.onConsume += OnConsume;
+        EquipmentManager.Singleton.onEquipmentChanged += OnEquipmentChanged;
+		EquipmentManager.Singleton.onConsume += OnConsume;
     }
 	
 	void OnConsume(Consumable item){

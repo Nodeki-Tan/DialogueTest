@@ -18,6 +18,6 @@ public class DialogueTrigger : Interaction
 
     public void TriggerDialogue()
     {
-        DialogueManager.instance.StartDialogue(dialogue);
+        DialogueManager.Singleton.StartDialogue(dialogue);
     }
 }

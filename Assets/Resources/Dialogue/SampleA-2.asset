@@ -22,4 +22,4 @@ MonoBehaviour:
   - And keep reading!
   child: []
   triggerEvents:
-  - {fileID: 11400000, guid: 2d4fdfa1d3f0f9d46b79a5d53186d083, type: 2}
+  - {fileID: 11400000, guid: b14be5f8ea5324a468713d5825d1dfe8, type: 2}

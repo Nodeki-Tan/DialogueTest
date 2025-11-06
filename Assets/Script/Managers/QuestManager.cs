@@ -2,41 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 // Launcher class for the server program
-public class QuestManager
+public class QuestManager : MonoBehaviour
 {
 
     #region Singleton
 
-    private static QuestManager _singleton = new();
-    public static QuestManager Singleton
+    public static QuestManager Singleton { get; private set; }
+
+    private void Awake()
     {
-        get => _singleton;
-        private set
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
         {
-            if (_singleton == null)
-            {
-                _singleton = value;
-                _singleton.Init();
-            }
-            else if (_singleton != value)
-            {
-                Debug.Log($"{nameof(QuestManager)} instance already exists, destroying duplicate!");
-            }
+            Destroy(gameObject);
         }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
+        }
+
+        Init();
     }
 
     #endregion
 
     public void Init()
     {
-        Singleton = this;
-
         questData = new dataCollection(new Dictionary<string, string>(), "questData", "Data", "Saves/");
 
-        Debug.Log("QuestManager created");
+        Debug.Log($"{nameof(QuestManager)} created");
     }
+
+
+    public dataCollection saveData;
+
+    // Callback which is triggered when
+    // an quests gets added/removed.
+    public delegate void OnQuestChanged(Quest quest, bool completed);
+    public OnQuestChanged onQuestChangedCallback;
+
+    public delegate void OnQuestInfo(Quest quest);
+    public OnQuestInfo onQuestInfoCallback;
 
     public List<Quest> activeQuests = new List<Quest>();
     public List<Quest> completedQuests = new List<Quest>();
@@ -47,6 +59,8 @@ public class QuestManager
         if (!activeQuests.Contains(quest) && !completedQuests.Contains(quest))
         {
             activeQuests.Add(quest);
+
+
             // Trigger start events
             if (quest.triggerEvents != null)
             {
@@ -55,6 +69,10 @@ public class QuestManager
                     evt.OnStateEnter();
                 }
             }
+
+            if (onQuestChangedCallback != null)
+                onQuestChangedCallback.Invoke(quest, false);
+
             Debug.Log($"Quest '{quest.name}' started.");
         }
     }
@@ -76,6 +94,28 @@ public class QuestManager
         return false;
     }
 
+    public T GetQuestData<T>(string key, T defaultval = default)
+    {
+        T returnVal;
+
+        string storedData;
+        if (questData.data.TryGetValue(key, out storedData))
+        {
+            returnVal = GetValue<T>(storedData);
+
+            return returnVal;
+        }
+        else
+        {
+            return defaultval;
+        }
+    }
+
+    public T GetValue<T>(string value)
+    {
+        return (T)Convert.ChangeType(value, typeof(T));
+    }
+
     public void CompleteQuest(Quest quest)
     {
         if (activeQuests.Contains(quest) && quest.IsQuestComplete())
@@ -90,6 +130,10 @@ public class QuestManager
                     evt.OnStateExit();
                 }
             }
+
+            if (onQuestChangedCallback != null)
+                onQuestChangedCallback.Invoke(quest, true);
+
             Debug.Log($"Quest '{quest.name}' completed.");
         }
     }
@@ -112,42 +156,40 @@ public class QuestManager
         return completedQuests.Contains(quest);
     }
 
-    public bool SaveQuests()
+    public bool SerializeQuests()
     {
         // Implement saving logic here
-        dataCollection data = new dataCollection(new Dictionary<string, string>(), "quests", "Data", "Saves/");
+        saveData = new dataCollection(new Dictionary<string, string>(), "quests", "Data", "Saves/");
 
-        data.SaveVariable("activeCount", activeQuests.Count.ToString());
+        saveData.SaveVariable("activeCount", activeQuests.Count.ToString());
         foreach (var quest in activeQuests)
         {
             int index = activeQuests.IndexOf(quest);
 
-            data.SaveVariable($"active_{index}", quest.name);
+            saveData.SaveVariable($"active_{index}", quest.name);
         }
 
-        data.SaveVariable("completedCount", completedQuests.Count.ToString());
+        saveData.SaveVariable("completedCount", completedQuests.Count.ToString());
         foreach (var quest in completedQuests)
         {
             int index = completedQuests.IndexOf(quest);
 
-            data.SaveVariable($"completed_{index}", quest.name);
+            saveData.SaveVariable($"completed_{index}", quest.name);
         }
 
-        data.SaveVariable("dataCount", questData.data.Count.ToString());
+        saveData.SaveVariable("dataCount", questData.data.Count.ToString());
         foreach (var questdata in questData.data)
         {
-            data.SaveVariable(questdata.Key, questdata.Value);
+            saveData.SaveVariable(questdata.Key, questdata.Value);
         }
 
+        //saveData.SaveFile();
 
         return true;
     }
 
-    public bool LoadQuests()
+    public bool LoadQuests(dataCollection data)
     {
-        dataCollection data = new dataCollection(new Dictionary<string, string>(), "quests", "Data", "Saves/");
-        data.LoadFile();
-        questData = new dataCollection(new Dictionary<string, string>(), "questData", "Data", "Saves/");
 
         int activeCount = data.TryGetInt("activeCount", 0);
         for (int i = 0; i < activeCount; i++)
@@ -174,15 +216,26 @@ public class QuestManager
         }
 
         int dataCount = data.TryGetInt("dataCount", 0);
-        for (int i = 0; i < dataCount; i++)
+
+        if (data.data.ContainsKey("dataCount"))
         {
-            string key = "data_" + i;
-            if (data.data.ContainsKey(key))
+
+            // With this corrected line:
+            int index = data.data.Keys.ToList().IndexOf("dataCount");
+
+            for (int i = index; i < dataCount; i++)
             {
-                string value = data.data[key];
-                questData.SaveVariable(key, value);
+                string key = data.data.ElementAt(i).Key;
+                if (data.data.ContainsKey(key))
+                {
+                    string value = data.data[key];
+                    questData.SaveVariable(key, value);
+                }
             }
+
         }
+
+
 
         // Implement loading logic here
         return true;

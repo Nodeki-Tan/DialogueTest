@@ -23,7 +23,7 @@ public class Item : ScriptableObject
 
     public void RemoveFromInventory()
     {
-        Inventory.instance.Remove(this);
+        InventoryManager.Singleton.Remove(this);
     }
 	
 	public void Drop(){

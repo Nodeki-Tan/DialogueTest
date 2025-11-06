@@ -9,18 +9,42 @@ public class EquipmentManager : MonoBehaviour
 {
 
     #region Singleton
-	
-    public Equipment[] defaultEquipment;
 
-    public static EquipmentManager instance;
+    public static EquipmentManager Singleton { get; private set; }
 
-    void Awake()
+    private void Awake()
     {
-        instance = this;
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
+        }
+
+        Init();
     }
 
     #endregion
 
+    public void Init()
+    {
+        // Initialize currentEquipment based on number of equipment slots
+        int numSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
+        currentEquipment = new Equipment[numSlots];
+
+        EquipDefaults();
+
+        Debug.Log($"{nameof(EquipmentManager)} started");
+    }
+
+
+    public Equipment[] defaultEquipment;
     Equipment[] currentEquipment;  // Items we currently have equipped
 
     // Callback for when an item is equipped/unequipped
@@ -33,19 +57,6 @@ public class EquipmentManager : MonoBehaviour
 	
 	public Image right;          // Reference to the Icon image
 	public Image left;          // Reference to the Icon image
-
-    Inventory inventory;    // Reference to our inventory
-
-    void Start()
-    {
-        inventory = Inventory.instance;     // Get a reference to our inventory
-
-        // Initialize currentEquipment based on number of equipment slots
-        int numSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-        currentEquipment = new Equipment[numSlots];
-
-        EquipDefaults();
-    }
 	
 	// Consume an item
     public void Consume(Consumable item)
@@ -94,7 +105,7 @@ public class EquipmentManager : MonoBehaviour
             // Add the item to the inventory
             oldItem = currentEquipment[slotIndex];
 			
-			if(!inventory.Add(oldItem)){
+			if(!InventoryManager.Singleton.Add(oldItem)){
 				oldItem.Drop();
 			}
 

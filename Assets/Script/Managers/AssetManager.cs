@@ -27,19 +27,27 @@ public class AssetManager
         }
     }
 
-    #endregion
+    public AssetManager()
+    {
+        Singleton = this;
+    }
 
-    public Item[] itemsDatabase;
-    public Quest[] questsDatabase;
+    #endregion
 
     public void Init()
     {
-        Singleton = this;
-
         LoadItems();
+        LoadRecipes();
+
+        LoadQuests();
 
         Debug.Log("AssetManager created");
     }
+
+
+    public Item[] itemsDatabase;
+    public Quest[] questsDatabase;
+    public Recipe[] recipesDatabase;
 
     void LoadItems()
     {
@@ -72,6 +80,24 @@ public class AssetManager
             if (quest.name == name)
             {
                 return ScriptableObject.Instantiate(quest);
+            }
+        }
+        return null;
+    }
+
+    void LoadRecipes()
+    {
+        recipesDatabase = Resources.LoadAll<Recipe>("Recipes/");
+        Debug.Log($"Loaded {recipesDatabase.Length} recipes.");
+    }
+
+    public Recipe getRecipeByName(string name)
+    {
+        foreach (Recipe recipe in recipesDatabase)
+        {
+            if (recipe.name == name)
+            {
+                return ScriptableObject.Instantiate(recipe);
             }
         }
         return null;

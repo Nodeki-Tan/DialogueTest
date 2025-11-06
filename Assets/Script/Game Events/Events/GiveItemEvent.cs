@@ -40,7 +40,7 @@ namespace GameEvents
             {
                 for (int i = 0; i < req.quantity; i++)
                 {
-                    Inventory.instance.Add(req.item);
+                    InventoryManager.Singleton.Add(AssetManager.Singleton.getByName(req.item.name));
                 }
             }
 

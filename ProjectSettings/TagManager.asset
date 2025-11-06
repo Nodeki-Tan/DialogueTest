@@ -10,6 +10,9 @@ TagManager:
   - PopUpDisplay
   - PopUpTextDisplay
   - PopUpSpriteDisplay
+  - DialoguePanel
+  - CraftingDisplay
+  - QuestsDisplay
   layers:
   - Default
   - TransparentFX

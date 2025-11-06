@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 /* Sits on all InventorySlots. */
@@ -8,7 +9,7 @@ public class InventorySlot : MonoBehaviour
 
     public Image icon;          // Reference to the Icon image
     public Button removeButton; // Reference to the remove button
-	public Text text; // Reference to the remove button
+	public TMP_Text text; // Reference to the remove button
 
     Item item;  // Current item in the slot
 
@@ -37,8 +38,8 @@ public class InventorySlot : MonoBehaviour
     // Called when the remove button is pressed
     public void OnRemoveButton()
     {
-		item.Drop();
-        Inventory.instance.Remove(item);
+		//item.Drop();
+        InventoryManager.Singleton.Remove(item);
     }
 
     // Called when the item is pressed

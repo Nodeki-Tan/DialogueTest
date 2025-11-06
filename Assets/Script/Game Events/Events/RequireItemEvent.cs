@@ -36,7 +36,7 @@ namespace GameEvents
 
             // Use the item
             // Something might happen
-            DialogueManager.instance.dialogueChildSelection = Inventory.instance.TakeItems(itemRequirements) ? 1 : 0;
+            DialogueManager.Singleton.dialogueChildSelection = InventoryManager.Singleton.TakeItems(itemRequirements) ? 1 : 0;
 
         }
 

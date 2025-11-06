@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Runtime.Serialization;
+using UnityEngine;
 
 /* The base item class. All items should derive from this. */
 
@@ -9,6 +11,7 @@ public class Recipe : ScriptableObject
     new public string name = "New Recipe";    // Name of the item
     public Sprite icon = null;              // Item icon
 
+    public Item resultItem = null;
     public ItemRequirement[] itemRequirements = null;
 
     // Called when the item is pressed in the inventory
@@ -16,15 +19,33 @@ public class Recipe : ScriptableObject
     {
         // Use the item
         // Something might happen
+        if (InventoryManager.Singleton.TakeItems(itemRequirements))
+        {
+            InventoryManager.Singleton.Add(AssetManager.Singleton.getByName(resultItem.name));
 
-        return Inventory.instance.TakeItems(itemRequirements);
+            return true;
+        }
+
+        return false;
+    }
+
+    public virtual bool CanCraft()
+    {
+        return InventoryManager.Singleton.CheckForItems(itemRequirements);
     }
 
 }
 
-
-public class ItemRequirement
+// With this corrected line:
+[Serializable]
+public struct ItemRequirement
 {
     public Item item;
     public int quantity;
+
+    public ItemRequirement(Item item, int quantity)
+    {
+        this.item = item;
+        this.quantity = quantity;
+    }
 }

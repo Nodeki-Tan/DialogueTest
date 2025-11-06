@@ -8,6 +8,7 @@ public class Quest : ScriptableObject
 {
 
     new public string name = "New String";    // Name of the dialogue
+    public string description = "My quest";
 
     public QuestRequirement[] requirements;  // Requirements to end the quest
 

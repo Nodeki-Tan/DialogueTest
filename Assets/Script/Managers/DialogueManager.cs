@@ -6,23 +6,44 @@ using UnityEngine.UI;
 using TMPro;
 using Event = GameEvents.Event;
 
-public class DialogueManager
+public class DialogueManager : MonoBehaviour
 {
 
     #region Singleton
 
-    public static DialogueManager instance;
+    public static DialogueManager Singleton { get; private set; }
 
-    public DialogueManager()
+    private void Awake()
     {
-        instance = this;
-
-        Debug.Log("DialogueManager created");
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
+        }
 
         Init();
     }
 
     #endregion
+
+    public void Init()
+    {
+        Strings = new Queue<string>();
+
+        dialogueObject = GameObject.FindGameObjectWithTag("DialoguePanel");
+        dialogueObject.SetActive(false);
+
+        Debug.Log($"{nameof(DialogueManager)} started");
+    }
+
+    public GameObject dialogueObject;
 
     public float typeSpeed = 0.05f;
     public float changeAutoSentenceSpeed = 1f;
@@ -39,16 +60,10 @@ public class DialogueManager
     public Dialogue Current { get => current; set => current = value; }
     public TMP_Text DialogueText { get => dialogueText; set => dialogueText = value; }
 
-    public void Init()
-    {
-        Strings = new Queue<string>();
-
-
-        Debug.Log("DialogueManager started");
-    }
-
     public void StartDialogue(Dialogue _dialogue)
     {
+        dialogueObject.SetActive(true);
+
         Debug.Log("Starting dialogue " + _dialogue.name);
 
         dialogueText = GameObject.FindGameObjectWithTag("DialogueDisplay").GetComponent<TMP_Text>();
@@ -127,6 +142,15 @@ public class DialogueManager
         }
         else
         {
+
+            if (current.triggerEvents != null)
+            {
+                foreach (Event e in current.triggerEvents)
+                {
+                    e.OnStateExit();
+                }
+            }
+
             if (current.child.Length != 0)
             {
                 yield return new WaitForSeconds(_speed);
@@ -143,15 +167,6 @@ public class DialogueManager
 
     void EndDialogue()
     {
-
-        if (current.triggerEvents != null)
-        {
-            foreach (Event e in current.triggerEvents)
-            {
-                e.OnStateExit();
-            }
-        }
-
         if (current.child.Length != 0)
         {
             StartDialogue(current.child[current.choiceDialogue ? dialogueChildSelection : 0]);
@@ -159,6 +174,7 @@ public class DialogueManager
         else
         {
             dialogueText.text = "";
+            dialogueObject.SetActive(false);
         }
     }
 

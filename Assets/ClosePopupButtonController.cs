@@ -7,9 +7,9 @@ public class ClosePopupButtonController : MonoBehaviour
 {
     public static void ClosePopUp()
     {
-        if (PopUpManager.instance != null && PopUpManager.instance.Current != null)
+        if (PopUpManager.Singleton != null && PopUpManager.Singleton.Current != null)
         {
-            PopUpManager.instance.ClosePopUp();
+            PopUpManager.Singleton.ClosePopUp();
         }
     }
 

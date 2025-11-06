@@ -38,7 +38,7 @@ namespace GameEvents
             {
                 if (!QuestManager.Singleton.IsQuestComplete(quest))
                 {
-                    DialogueManager.instance.dialogueChildSelection = 0;
+                    DialogueManager.Singleton.dialogueChildSelection = 0;
                     return;
                 }
             }

@@ -7,10 +7,10 @@ public class NextButtonController : MonoBehaviour
 {
     public static void NextDialogueButton()
     {
-        if (DialogueManager.instance != null && DialogueManager.instance.Current != null)
+        if (DialogueManager.Singleton != null && DialogueManager.Singleton.Current != null)
         {
-            DialogueManager.instance.DialogueText.StopAllCoroutines();
-            DialogueManager.instance.DialogueText.StartCoroutine(DialogueManager.instance.NextDialogue(0.1f));
+            DialogueManager.Singleton.DialogueText.StopAllCoroutines();
+            DialogueManager.Singleton.DialogueText.StartCoroutine(DialogueManager.Singleton.NextDialogue(0.1f));
         }
     }
 

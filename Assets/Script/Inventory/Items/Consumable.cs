@@ -12,7 +12,7 @@ public class Consumable : Item
     public override void Use()
     {
         base.Use();
-		EquipmentManager.instance.Consume(this);
+		EquipmentManager.Singleton.Consume(this);
         RemoveFromInventory();                  // Remove it from inventory
     }
 }

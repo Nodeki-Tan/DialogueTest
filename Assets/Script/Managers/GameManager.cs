@@ -10,15 +10,32 @@ public class GameManager : MonoBehaviour
 
     #region Singleton
 
-    public static GameManager instance;
+    public static GameManager Singleton { get; private set; }
 
-    void Awake()
+    private void Awake()
     {
-        instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
+        }
+
+        Init();
     }
 
     #endregion
+
+    public void Init()
+    {
+        Debug.Log($"{nameof(GameManager)} started");
+    }
 
 
     public AudioSource mainSource;

@@ -22,4 +22,6 @@ MonoBehaviour:
   - There can be different lines
   child:
   - {fileID: 11400000, guid: 943c4096fc643dd45ae63292f8fc9278, type: 2}
-  triggerEvents: []
+  triggerEvents:
+  - {fileID: 11400000, guid: 1ae12087c2a21df4d830fb950c739ff1, type: 2}
+  - {fileID: 11400000, guid: f3de3f32cbd083241b6be3e8da035251, type: 2}

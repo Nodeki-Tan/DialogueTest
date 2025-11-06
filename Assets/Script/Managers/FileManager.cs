@@ -26,13 +26,16 @@ public class FileManager
             }
         }
 
+    public FileManager()
+    {
+        Singleton = this;
+    }
+
     #endregion
 
     public void Init()
     {
-        Singleton = this;
-
-        Debug.Log("FileManager created");
+        Debug.Log($"{nameof(FileManager)} created");
     }
 
 }

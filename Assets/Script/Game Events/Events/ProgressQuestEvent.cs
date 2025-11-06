@@ -21,7 +21,7 @@ using UnityEngine.UIElements.Experimental;
 namespace GameEvents
 {
 
-    [CreateAssetMenu(menuName = "Gameplay/ProgressItemEvent")]
+    [CreateAssetMenu(menuName = "Gameplay/ProgressQuestEvent")]
     public class ProgressQuestEvent : Event
     {
         
@@ -38,6 +38,13 @@ namespace GameEvents
             Debug.Log("End of dialogue");
 
             QuestManager.Singleton.SetQuestData<string>(progressKey, progressValue);
+
+            if (relatedQuest != null && relatedQuest.IsQuestComplete())
+            {
+
+                QuestManager.Singleton.CompleteQuest(relatedQuest);
+
+            }
 
         }
 

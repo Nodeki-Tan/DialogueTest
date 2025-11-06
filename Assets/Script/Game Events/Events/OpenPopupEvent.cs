@@ -34,7 +34,7 @@ namespace GameEvents
             // Like for example a scene switch, or a quest update
             Debug.Log("End of dialogue");
 
-            PopUpManager.instance.OpenPopUp(popUp);
+            PopUpManager.Singleton.OpenPopUp(popUp);
 
         }
 

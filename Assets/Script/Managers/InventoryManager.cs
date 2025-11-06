@@ -1,35 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Assets.Script.Inventory.Items;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class InventoryManager : MonoBehaviour
 {
 
     #region Singleton
 
-    public static Inventory instance;
+    public static InventoryManager Singleton { get; private set; }
 
-    void Awake()
+    private void Awake()
     {
-        if (instance != null)
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
         {
-            Debug.LogWarning("More than one instance of Inventory found!");
-            return;
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
         }
 
-        instance = this;
+        Init();
     }
 
     #endregion
+
+    public void Init()
+    {
+        space = maxSpace;
+
+        Debug.Log($"{nameof(InventoryManager)} created");
+    }
 
     // Callback which is triggered when
     // an item gets added/removed.
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    
-    public int space = 10;  // Amount of slots in inventory
+    public delegate void OnRecipeInfo(Recipe recipe);
+    public OnRecipeInfo onRecipeInfoCallback;
+
+    public dataCollection saveData;
+
+    public int maxSpace = 10;
+    public int space;  // Amount of slots in inventory
 
     // Current list of items in inventory
     public List<Item> items = new List<Item>();
@@ -90,8 +108,8 @@ public class Inventory : MonoBehaviour
         int q = amount;
         foreach (Item i in items)
         {
-            if (i == item)
-            {
+            if (i.name == item.name)
+                {
                 q--;
                 if (q <= 0)
                 {
@@ -105,10 +123,10 @@ public class Inventory : MonoBehaviour
         {
             foreach (Item i in items)
             {
-                if (i == item)
+                if (i.name == item.name)
                 {
                     items.Remove(i);     // Remove item from list
-                    space -= item.size;
+                    space += item.size;
 
                     // Trigger callback
                     if (onItemChangedCallback != null)
@@ -148,11 +166,11 @@ public class Inventory : MonoBehaviour
                 }
             }
 
-            Debug.Log("Crafted " + name);
+            //Debug.Log("Crafted " + name);
             return true;
         }
 
-        Debug.Log("No requirements for " + name);
+        //Debug.Log("No requirements for " + name);
 
         return false;
     }
@@ -167,7 +185,7 @@ public class Inventory : MonoBehaviour
                 int q = req.quantity;
                 foreach (Item i in items)
                 {
-                    if (i == req.item)
+                    if (i.name == req.item.name)
                     {
                         q--;
                         if (q <= 0)
@@ -182,36 +200,46 @@ public class Inventory : MonoBehaviour
                     return false;
                 }
             }
-            Debug.Log("All items available for " + name);
+            //Debug.Log("All items available for " + name);
             return true;
         }
-        Debug.Log("No requirements for " + name);
+        //Debug.Log("No requirements for " + name);
         return false;
     }
 
-    public bool SaveInventory()
+    public int GetItemAmountByType(Item itemType)
+    {
+        int amount = 0;
+
+        foreach(Item item in items)
+        {
+            if (item.name == itemType.name)
+                amount++;
+        }
+
+        return amount;
+    }
+
+    public bool SerializeInventory()
     {
         // Implement saving logic here
 
-        dataCollection data = new dataCollection(new Dictionary<string, string>(), "inventory", "Data", "Saves/");
-        data.SaveVariable("itemCount", items.Count.ToString());
+        saveData = new dataCollection(new Dictionary<string, string>(), "inventory", "Data", "Saves/");
+        saveData.SaveVariable("itemCount", items.Count.ToString());
 
         foreach (Item item in items)
         {
             int index = items.IndexOf(item);
-            data.SaveVariable("item_" + index, item.name);
+            saveData.SaveVariable("item_" + index, item.name);
         }
 
-        data.SaveFile();
+        //saveData.SaveFile();
 
         Debug.Log("Inventory saved.");
         return true;
     }
 
-    public bool LoadInventory() { 
-        
-        dataCollection data = new dataCollection(new Dictionary<string, string>(), "inventory", "Data", "Saves/");
-        data.LoadFile();
+    public bool LoadInventory(dataCollection data) { 
 
         items.Clear();
         space = 10; // Reset space

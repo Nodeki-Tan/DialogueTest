@@ -14,7 +14,7 @@ public class Equipment : Consumable
     public override void Use()
     {
         base.Use();
-        EquipmentManager.instance.Equip(this);  // Equip it
+        EquipmentManager.Singleton.Equip(this);  // Equip it
         RemoveFromInventory();                  // Remove it from inventory
     }
 

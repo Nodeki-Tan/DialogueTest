@@ -7,36 +7,50 @@ using TMPro;
 using Event = GameEvents.Event;
 using UnityEditor.Rendering;
 
-public class PopUpManager
+public class PopUpManager : MonoBehaviour
 {
 
     #region Singleton
 
-    public static PopUpManager instance;
+    public static PopUpManager Singleton { get; private set; }
 
-    public PopUpManager()
+    private void Awake()
     {
-        instance = this;
-
-        Debug.Log("PopUpManager created");
+        // If an instance already exists and it's not this one, destroy this new instance
+        if (Singleton != null && Singleton != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Set this as the singleton instance
+            Singleton = this;
+            // Optionally, prevent the object from being destroyed on scene load
+            DontDestroyOnLoad(gameObject);
+        }
 
         Init();
     }
 
     #endregion
 
+    public void Init()
+    {
+        popupObject = GameObject.FindGameObjectWithTag("PopUpDisplay");
+        popupObject.SetActive(false);
+
+        Debug.Log($"{nameof(PopUpManager)} started");
+    }
+
+
     private PopUp current;
-    private GameObject popupObject;
+    public GameObject popupObject;
     private TMP_Text popupText;
     private Image popupSprite;
 
     public PopUp Current { get => current; set => current = value; }
     public TMP_Text PopupText { get => popupText; set => popupText = value; }
 
-    public void Init()
-    {
-        Debug.Log("PopUpManager started");
-    }
 
     public void OpenPopUp(PopUp _popup)
     {

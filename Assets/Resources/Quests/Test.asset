@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   name: A new quest
-  requirements: []
+  description: My quest
+  requirements:
+  - {fileID: 11400000, guid: b38343b3e8427c146a15eaa00e9ca490, type: 2}
   triggerEvents: []
   completionEvents: []

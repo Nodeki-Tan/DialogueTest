@@ -9,26 +9,39 @@ public class SettingsManager
 
     #region Singleton
 
-    public static SettingsManager instance;
+    private static SettingsManager _singleton = new();
+    public static SettingsManager Singleton
+    {
+        get => _singleton;
+        private set
+        {
+            if (_singleton == null)
+            {
+                _singleton = value;
+                _singleton.Init();
+            }
+            else if (_singleton != value)
+            {
+                Debug.Log($"{nameof(SettingsManager)} instance already exists, destroying duplicate!");
+            }
+        }
+    }
 
     public SettingsManager()
     {
-        instance = this;
-
-        Debug.Log("SettingsManager created");
-
-        Init();
+        Singleton = this;
     }
 
     #endregion
 
-
-    void Init()
+    public void Init()
     {
         audioMixer = Resources.Load("Master") as AudioMixer;
 
         settings = new dataCollection(new(),
         "config", "config", "config/");
+
+        Debug.Log($"{nameof(SettingsManager)} created");
     }
 
     public AudioMixer audioMixer;
@@ -149,7 +162,7 @@ public class SettingsManager
 
     public static void loadGameData()
     {
-        instance.loadGame();
+        Singleton.loadGame();
 
         if (settings.data.Keys.Count <= 0)
             return;
@@ -168,10 +181,10 @@ public class SettingsManager
 
         //touchControls = settings.TryGetValue  <bool>  ("touchControls");
 
-        instance.setMasterVolume(masterSound);
-        instance.setMusicVolume(musicSound);
-        instance.setSFXVolume(SFXSound);
-        instance.setVoiceVolume(voiceSound);
+        Singleton.setMasterVolume(masterSound);
+        Singleton.setMusicVolume(musicSound);
+        Singleton.setSFXVolume(SFXSound);
+        Singleton.setVoiceVolume(voiceSound);
 
         QualitySettings.SetQualityLevel(qualityLevel);
 

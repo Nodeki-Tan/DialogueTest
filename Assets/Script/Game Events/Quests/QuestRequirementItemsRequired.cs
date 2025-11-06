@@ -4,14 +4,14 @@ using UnityEngine;
 using Event = GameEvents.Event;
 
 [CreateAssetMenu(fileName = "New Quest Requirement", menuName = "Quests/RequirementItems")]
-public class QuestRequirementItemsRequired : ScriptableObject
+public class QuestRequirementItemsRequired : QuestRequirement
 {
 
     public ItemRequirement[] itemsRequired;
 
-    public bool IsRequirementMet()
+    public override bool IsRequirementMet()
     {
-        return Inventory.instance.CheckForItems(itemsRequired);
+        return InventoryManager.Singleton.CheckForItems(itemsRequired);
     }
 
 }
